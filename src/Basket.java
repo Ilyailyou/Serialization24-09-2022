@@ -3,10 +3,13 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class Basket {
+public class Basket implements Serializable{
     private String[] names;
     private int[] prices;
     private int[] count;
+    public Basket() {
+
+    }
 
     public Basket(String[] names, int[] prices) {
         this.names = names;
@@ -58,6 +61,15 @@ public class Basket {
                     .collect(Collectors.joining(" "));
             writer.write(countTxt+"\n");
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void saveBin(File file){
+        try{
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+            out.writeObject(this);
+            out.close();
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

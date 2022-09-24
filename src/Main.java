@@ -5,8 +5,8 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        File file = new File("Basket.txt");
-        Basket basket = loadFromTxtFile(file);
+        File file = new File("Basket.bin");
+        Basket basket = loadFromBinFile(file);
         if(basket == null) {
             basket = new Basket(new String[] {"Хлеб", "Яблоки", "Молоко"}, new int[]{100, 200, 300});
         }
@@ -33,7 +33,8 @@ public class Main {
             productNumber = Integer.parseInt(amount[0]) - 1;
             productCount = Integer.parseInt(amount[1]);
             basket.addToCart(productNumber, productCount);
-            basket.saveTxt(file);
+            basket.saveBin(file);
+            //basket.saveTxt(file);
             basket.printCart();
 
         }
@@ -52,6 +53,16 @@ public class Main {
         } catch (FileNotFoundException e) {
             return null;
         } catch (IOException e) {
+            return null;
+        }
+    }
+    public static Basket loadFromBinFile(File file){
+        try{
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+            Basket basket = (Basket) in.readObject();
+            in.close();
+            return basket;
+        }catch (Exception e) {
             return null;
         }
     }
