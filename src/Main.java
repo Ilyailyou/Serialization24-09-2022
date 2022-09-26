@@ -6,9 +6,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         File file = new File("Basket.bin");
-        Basket basket = loadFromBinFile(file);
-        if(basket == null) {
-            basket = new Basket(new String[] {"Хлеб", "Яблоки", "Молоко"}, new int[]{100, 200, 300});
+        Basket basket = Basket.loadFromBinFile(file);
+        if (basket == null) {
+            basket = new Basket(new String[]{"Хлеб", "Яблоки", "Молоко"}, new int[]{100, 200, 300});
         }
         String[] products = basket.getNames();
         int[] prices = basket.getPrices();
@@ -17,7 +17,7 @@ public class Main {
 
         System.out.println("Список возможных товаров для покупки");
         for (int i = 0; i < products.length; i++) {
-            System.out.println((i + 1) + "." + " " + products[i] + " " + prices[i] + " " + "руб/шт");
+            System.out.println((i + 1) + ". " + products[i] + " " + prices[i] + " руб/шт");
         }
 
         while (true) {
@@ -40,7 +40,7 @@ public class Main {
         }
         basket.printCart();
     }
-    public static Basket loadFromTxtFile(File textFile) {
+    /*public static Basket loadFromTxtFile(File textFile) {
         try (BufferedReader reader = new BufferedReader(new FileReader(textFile))) {
             String[] names = reader.readLine().split(" ");
             int[] prices = Arrays.stream(reader.readLine().split(" "))
@@ -55,16 +55,7 @@ public class Main {
         } catch (IOException e) {
             return null;
         }
-    }
-    public static Basket loadFromBinFile(File file){
-        try{
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-            Basket basket = (Basket) in.readObject();
-            in.close();
-            return basket;
-        }catch (Exception e) {
-            return null;
-        }
-    }
+    }*/
+
 }
 

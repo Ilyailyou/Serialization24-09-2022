@@ -3,10 +3,11 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class Basket implements Serializable{
+public class Basket implements Serializable {
     private String[] names;
     private int[] prices;
     private int[] count;
+
     public Basket() {
 
     }
@@ -16,14 +17,17 @@ public class Basket implements Serializable{
         this.prices = prices;
         this.count = new int[names.length];
     }
+
     public Basket(String[] names, int[] prices, int[] count) {
         this.names = names;
         this.prices = prices;
         this.count = count;
     }
+
     public String[] getNames() {
         return names;
     }
+
     public int[] getPrices() {
         return prices;
     }
@@ -31,25 +35,27 @@ public class Basket implements Serializable{
     public int[] getCount() {
         return count;
     }
+
     public void addToCart(int productNum, int amount) {
         this.count[productNum] += amount;
-        if(count[productNum] < 0) {
+        if (count[productNum] < 0) {
             this.count[productNum] = 0;
         }
     }
+
     public void printCart() {
         int sum = 0;
         System.out.println("Ваша корзина:");
         for (int i = 0; i < names.length; i++) {
-            if(count[i] != 0) {
-                System.out.println((i+1)+". "+names[i]+" ("+count[i]+"шт.),всего "+(count[i]*prices[i])+" рублей");
+            if (count[i] != 0) {
+                System.out.println((i + 1) + ". " + names[i] + " (" + count[i] + "шт.),всего " + (count[i] * prices[i]) + " рублей");
                 sum += count[i] * prices[i];
             }
         }
-        System.out.println("Итого:"+sum+" рублей.");
+        System.out.println("Итого:" + sum + " рублей.");
     }
 
-    public void saveTxt(File textFile) throws IOException {
+    /*public void saveTxt(File textFile) throws IOException {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(textFile))) {
             writer.write(String.join(" ", names) + "\n");
             String pricesTxt = Arrays.stream(prices)
@@ -63,14 +69,25 @@ public class Basket implements Serializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    public void saveBin(File file){
-        try{
+    }*/
+    public void saveBin(File file) {
+        try {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
             out.writeObject(this);
             out.close();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static Basket loadFromBinFile(File file) {
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+            Basket basket = (Basket) in.readObject();
+            in.close();
+            return basket;
+        } catch (Exception e) {
+            return null;
         }
     }
 }
