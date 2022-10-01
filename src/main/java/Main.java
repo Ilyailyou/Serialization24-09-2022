@@ -1,17 +1,23 @@
+
+import org.json.simple.parser.ParseException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-        File file = new File("Basket.txt");
-        Basket basket = Basket.loadFromTxtFile(file);
+    public static void main(String[] args) throws IOException, ParseException {
+        File file = new File("Basket.json");
+        File logFile = new File("log.csv");
+        Basket basket = Basket.loadFromJson(file);
         if (basket == null) {
             basket = new Basket(new String[]{"Хлеб", "Яблоки", "Молоко"}, new int[]{100, 200, 300});
         }
         String[] products = basket.getNames();
         int[] prices = basket.getPrices();
+        ClientLog clientLog = new ClientLog();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -33,11 +39,12 @@ public class Main {
             productNumber = Integer.parseInt(amount[0]) - 1;
             productCount = Integer.parseInt(amount[1]);
             basket.addToCart(productNumber, productCount);
-            basket.saveTxt(file);
+            basket.saveJson(file);
             basket.printCart();
-
+            clientLog.log(productNumber + 1, productCount);
         }
         basket.printCart();
+        clientLog.exportAsCSV(logFile);
     }
 }
 

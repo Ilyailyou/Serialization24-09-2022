@@ -1,3 +1,7 @@
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -81,5 +85,38 @@ public class Basket {
         } catch (IOException e) {
             return null;
         }
+    }
+    public void saveJson(File textFile) throws IOException {
+        JSONObject basketJson = new JSONObject();
+        basketJson.put("names", String.join(" ", names));
+        String pricesTxt = Arrays.stream(prices)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining(" "));
+        basketJson.put("prices", pricesTxt);
+        String countTxt = Arrays.stream(count)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining(" "));
+        basketJson.put("count", countTxt);
+
+        try(FileWriter file = new FileWriter(textFile)){
+            file.write(basketJson.toJSONString());
+        }
+    }
+    public static Basket loadFromJson(File textFile) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(textFile));
+        JSONObject jsonObject = (JSONObject) obj;
+        String namesString = (String) jsonObject.get("names");
+        String[] names = namesString.split(" ");
+        String pricesString = (String) jsonObject.get("prices");
+        int[] prices = Arrays.stream(pricesString.split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        String countString = (String) jsonObject.get("count");
+        int[] count = Arrays.stream(countString.split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        return new Basket(names, prices, count);
+
     }
 }
