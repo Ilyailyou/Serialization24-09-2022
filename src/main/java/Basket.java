@@ -1,6 +1,8 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 
 import java.io.*;
 import java.util.Arrays;
@@ -87,7 +89,10 @@ public class Basket {
         }
     }
     public void saveJson(File textFile) throws IOException {
-        JSONObject basketJson = new JSONObject();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(textFile, this);
+
+        /*JSONObject basketJson = new JSONObject();
         basketJson.put("names", String.join(" ", names));
         String pricesTxt = Arrays.stream(prices)
                 .mapToObj(String::valueOf)
@@ -100,10 +105,13 @@ public class Basket {
 
         try(FileWriter file = new FileWriter(textFile)){
             file.write(basketJson.toJSONString());
-        }
+        }*/
     }
     public static Basket loadFromJson(File textFile) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(textFile, Basket.class);
+
+        /*JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(textFile));
         JSONObject jsonObject = (JSONObject) obj;
         String namesString = (String) jsonObject.get("names");
@@ -116,7 +124,7 @@ public class Basket {
         int[] count = Arrays.stream(countString.split(" "))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-        return new Basket(names, prices, count);
+        return new Basket(names, prices, count);*/
 
     }
 }

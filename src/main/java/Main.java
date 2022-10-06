@@ -70,7 +70,6 @@ public class Main {
             if(saveEnabled) {
                 File fileSave = new File(saveFileName);
                 if(saveFormat.equals("json")) {
-                    System.out.println("Гаврюшка ко мне");
                     basket.saveJson(fileSave);
                 } else if (saveFormat.equals("txt")) {
                     basket.saveTxt(fileSave);
