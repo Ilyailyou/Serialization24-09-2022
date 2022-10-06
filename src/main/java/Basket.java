@@ -44,7 +44,7 @@ public class Basket {
         }
     }
 
-    public void printCart() {
+    public int printCart() {
         int sum = 0;
         System.out.println("Ваша корзина:");
         for (int i = 0; i < names.length; i++) {
@@ -54,21 +54,28 @@ public class Basket {
             }
         }
         System.out.println("Итого:" + sum + " рублей.");
+        return sum;
     }
 
-    public void saveTxt(File textFile) throws IOException {
+    public String saveTxt(File textFile) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(textFile))) {
+            String finalString = "";
             writer.write(String.join(" ", names) + "\n");
+            finalString += String.join(" ", names) + "\n";
             String pricesTxt = Arrays.stream(prices)
                     .mapToObj(String::valueOf)
                     .collect(Collectors.joining(" "));
             writer.write(pricesTxt + "\n");
+            finalString += pricesTxt + "\n";
             String countTxt = Arrays.stream(count)
                     .mapToObj(String::valueOf)
                     .collect(Collectors.joining(" "));
             writer.write(countTxt + "\n");
+            finalString += countTxt + "\n";
+            return finalString;
         } catch (IOException e) {
             e.printStackTrace();
+            return "";
         }
     }
 
@@ -88,9 +95,10 @@ public class Basket {
             return null;
         }
     }
-    public void saveJson(File textFile) throws IOException {
+    public String saveJson(File textFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(textFile, this);
+        return mapper.writeValueAsString(this);
 
         /*JSONObject basketJson = new JSONObject();
         basketJson.put("names", String.join(" ", names));
