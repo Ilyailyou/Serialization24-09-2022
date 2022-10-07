@@ -1,6 +1,4 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
@@ -12,6 +10,10 @@ public class Basket {
     private String[] names;
     private int[] prices;
     private int[] count;
+
+    public Basket(){
+
+    }
 
     public Basket(String[] names, int[] prices) {
         this.names = names;
@@ -44,7 +46,7 @@ public class Basket {
         }
     }
 
-    public int printCart() {
+    public void printCart() {
         int sum = 0;
         System.out.println("Ваша корзина:");
         for (int i = 0; i < names.length; i++) {
@@ -54,28 +56,21 @@ public class Basket {
             }
         }
         System.out.println("Итого:" + sum + " рублей.");
-        return sum;
     }
 
-    public String saveTxt(File textFile) throws IOException {
+    public void saveTxt(File textFile) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(textFile))) {
-            String finalString = "";
             writer.write(String.join(" ", names) + "\n");
-            finalString += String.join(" ", names) + "\n";
             String pricesTxt = Arrays.stream(prices)
                     .mapToObj(String::valueOf)
                     .collect(Collectors.joining(" "));
             writer.write(pricesTxt + "\n");
-            finalString += pricesTxt + "\n";
             String countTxt = Arrays.stream(count)
                     .mapToObj(String::valueOf)
                     .collect(Collectors.joining(" "));
             writer.write(countTxt + "\n");
-            finalString += countTxt + "\n";
-            return finalString;
         } catch (IOException e) {
             e.printStackTrace();
-            return "";
         }
     }
 
@@ -95,44 +90,26 @@ public class Basket {
             return null;
         }
     }
-    public String saveJson(File textFile) throws IOException {
+    public void saveJson(File textFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(textFile, this);
-        return mapper.writeValueAsString(this);
-
-        /*JSONObject basketJson = new JSONObject();
-        basketJson.put("names", String.join(" ", names));
-        String pricesTxt = Arrays.stream(prices)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining(" "));
-        basketJson.put("prices", pricesTxt);
-        String countTxt = Arrays.stream(count)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining(" "));
-        basketJson.put("count", countTxt);
-
-        try(FileWriter file = new FileWriter(textFile)){
-            file.write(basketJson.toJSONString());
-        }*/
     }
     public static Basket loadFromJson(File textFile) throws IOException, ParseException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(textFile, Basket.class);
+    }
 
-        /*JSONParser parser = new JSONParser();
-        Object obj = parser.parse(new FileReader(textFile));
-        JSONObject jsonObject = (JSONObject) obj;
-        String namesString = (String) jsonObject.get("names");
-        String[] names = namesString.split(" ");
-        String pricesString = (String) jsonObject.get("prices");
-        int[] prices = Arrays.stream(pricesString.split(" "))
-                .mapToInt(Integer::parseInt)
-                .toArray();
-        String countString = (String) jsonObject.get("count");
-        int[] count = Arrays.stream(countString.split(" "))
-                .mapToInt(Integer::parseInt)
-                .toArray();
-        return new Basket(names, prices, count);*/
+    @Override
+    public String toString() {
+        String text = "";
 
+        text += String.join(" ", names) + " ";
+        text += Arrays.stream(prices)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining(" ")) + " ";
+        text += Arrays.stream(count)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining(" "));
+        return text;
     }
 }
